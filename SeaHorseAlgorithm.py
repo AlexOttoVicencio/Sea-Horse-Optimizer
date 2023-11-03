@@ -5,8 +5,8 @@ import math
 
 LB=-100
 UB=100
-Dim=5
-Pop=10
+Dim=2
+Pop=5
 popsize=30;
 iterations=5  
 current_iteration=0
@@ -56,7 +56,7 @@ def levy_function():
     k=random.uniform(0,1)
     sigma=(math.gamma(lambd+1)*math.sin(math.pi*lambd))/(math.gamma((lambd+1)/2)*lambd*(pow(2,((lambd-1)/2))))
     levy_value=s*((w*sigma)/abs(pow(k,(1/lambd))))
-    print("levy is : ",levy_value,sigma)
+    return levy_value
    
 
 
@@ -75,32 +75,70 @@ with np.nditer(seahorses, op_flags=['readwrite']) as it:
    for x in it:
        
        x[...] = random.uniform(0,1) * (UB-LB) + LB
+
+
+print("----------SEAHORSES-----------------")
+print(seahorses)
+print("-------------------------------------------")
 #getting elite index and an array of fitness values
 
 best_seahorse_index = elite_seahorse(seahorses)
-print(best_seahorse_index)
+
 
 
 
 while current_iteration<iterations :
+    r=random.uniform(-1,1)
+    
     #levy value
     step_lenght=levy_function()
+    print("levy value is: ",step_lenght)
+
+    num_rows, num_cols = seahorses.shape
 
 #first it goes through every row and decides wether to change them with levy or the brownian movement
- 
-    r=random.uniform(-1,1)
+    
     if(r>0):
         u=0.05
         v=0.05
-        theta=random.uniform(0,2*math.pi)
+        theta=random.uniform(0,2*math.pi)   
         p=u*pow(math.e,(theta*v))
         x=p*math.cos(theta)
         y=p*math.sin(theta)
         z=p*theta
-          
+        print("theta: ",theta)
+        print("p: " , p)
+        print("x: ",x)
+        print("y: ",z)
+        print("z: ",z)
+
+        #4th eq is applied
+        for row in range (0,num_rows):
+            for column in range (0,num_cols): 
+             print("seahorse: " , seahorses[row,column])
+             print("best seahorse:", seahorses[best_seahorse_index,column])
+             seahorses[row,column]=(seahorses[row,column] + ((step_lenght*(seahorses[best_seahorse_index,column]-seahorses[row,column])*x*y*z)+seahorses[best_seahorse_index,column])) 
+        print("----------SEAHORSES-----------------")
+        print(seahorses)
+        print("-------------------------------------------")
+    
+
+
+
     current_iteration+=1
 
 
 
+
+
+print("----------SEAHORSES-----------------")
+print(seahorses)
+print("-------------------------------------------")
+#----TODO-----
+#Terminar Primer movimiento
+#terminar 2do movimiento
+#caza1
+#caza2
+#reproduccion
 
 
