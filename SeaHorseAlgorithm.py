@@ -34,9 +34,16 @@ def sphere_optimization(seahorses_copy):
     return elite_seahorse
 
 def rank_sphere_optimization(seahorses_copy):
+   num_rows, num_cols = seahorses_copy.shape
    print("ranking")
    print(seahorses_copy)
-
+   seahorses_copy=np.power(seahorses_copy,2)
+   ranked_seahorses=np.zeros((Pop,2))
+   print(ranked_seahorses)
+   for x in range (0,num_rows):
+      ranked_seahorses[x,1]=np.sum(seahorses_copy[x,:])
+      print(np.sum(seahorses_copy[x,:]))
+   print(ranked_seahorses)
 
 #----------
 
@@ -93,6 +100,7 @@ best_seahorse_index = elite_seahorse(seahorses)
 
 
 while current_iteration<iterations :
+    print("ITERACION----------")
     r1 = np.random.randn(1, Dim)
     best_seahorse_index = elite_seahorse(seahorses)
     #levy value
@@ -116,12 +124,12 @@ while current_iteration<iterations :
         for column in range (0,num_cols): 
          #print("pasa el for valor: ",r1[0,column])
          if(r1[0,column]>0):
-          #print("pasa por 1  valor:", r1[0,column])
-          theta=random.uniform(0,2*math.pi)   
-          p=u*pow(math.e,(theta*v))
-          x=p*math.cos(theta)
-          y=p*math.sin(theta)
-          z=p*theta
+           #print("pasa por 1  valor:", r1[0,column])
+           theta=random.uniform(0,2*math.pi)   
+           p=u*pow(math.e,(theta*v))
+           x=p*math.cos(theta)
+           y=p*math.sin(theta)
+           z=p*theta
              #print("theta: ",theta)
              #print("p: " , p)
              #print("x: ",x)
@@ -130,17 +138,17 @@ while current_iteration<iterations :
              #print("seahorse: " , seahorses[row,column])
              #print("sum is:", ((step_lenght*(seahorses[best_seahorse_index,column]-seahorses[row,column])*x*y*z)+seahorses[best_seahorse_index,column]) )
              #print("best seahorse:", seahorses[best_seahorse_index,column])
-          seahorses[row,column]=(seahorses[row,column] + ((step_lenght*(seahorses[best_seahorse_index,column]-seahorses[row,column])*x*y*z)+seahorses[best_seahorse_index,column])) 
+           seahorses[row,column]=(seahorses[row,column] + ((step_lenght*(seahorses[best_seahorse_index,column]-seahorses[row,column])*x*y*z)+seahorses[best_seahorse_index,column])) 
         else:
-         l=0.05
+          l=0.05
         #exploration part
          #for row in range (0,num_rows):
             #for column in range (0,num_cols):
-         #print("pasa por 2 valor:",r1[0,column])
-         num=random.uniform(0,1)
-         brownian=random.gauss(0,1)
+          #print("pasa por 2 valor:",r1[0,column])
+          num=random.uniform(0,1)
+          brownian=random.gauss(0,1)
            #print("the normal number is: ", brownian)
-         seahorses[row,column]= seahorses[row,column]+(num*l*brownian*(seahorses[row,column]-brownian*seahorses[best_seahorse_index,column]))
+          seahorses[row,column]= seahorses[row,column]+(num*l*brownian*(seahorses[row,column]-brownian*seahorses[best_seahorse_index,column]))
        
                    
     
@@ -167,6 +175,7 @@ while current_iteration<iterations :
 
     #keep values from growing too much
     for row in range (0,num_rows):
+
         for column in range (0,num_cols):
             if(seahorses[row,column]>100):
                 seahorses[row,column]=100
@@ -175,8 +184,8 @@ while current_iteration<iterations :
 
     #breeding
     #sort fitness of seahorses form best to worst in array
-        seahorses_copy=seahorses.copy()
-        seahorses_ranked=rank_sphere_optimization(seahorses_copy)
+    seahorses_copy=seahorses.copy()
+    seahorses_ranked=rank_sphere_optimization(seahorses_copy)
 
 
     current_iteration+=1
