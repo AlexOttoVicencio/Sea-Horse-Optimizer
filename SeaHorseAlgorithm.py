@@ -6,7 +6,7 @@ import math
 LB=-100
 UB=100
 Dim=2
-Pop=3
+Pop=4
 popsize=4;
 iterations=5 
 current_iteration=0
@@ -34,16 +34,28 @@ def sphere_optimization(seahorses_copy):
     return elite_seahorse
 
 def rank_sphere_optimization(seahorses_copy):
+   
    num_rows, num_cols = seahorses_copy.shape
+   
+   a=0
    print("ranking")
    print(seahorses_copy)
    seahorses_copy=np.power(seahorses_copy,2)
-   ranked_seahorses=np.zeros((Pop,2))
-   print(ranked_seahorses)
+   ranked_seahorses=np.zeros((num_rows,2))
+   
    for x in range (0,num_rows):
+      
       ranked_seahorses[x,1]=np.sum(seahorses_copy[x,:])
-      print(np.sum(seahorses_copy[x,:]))
+      ranked_seahorses[x,0]=a
+      a+=1
+      #print(np.sum(seahorses_copy[x,:]))
+   #print(ranked_seahorses)
+   print("------RANKEADOS----------")
+   
+   ranked_seahorses = ranked_seahorses[::-1]
    print(ranked_seahorses)
+
+   return ranked_seahorses
 
 #----------
 
@@ -186,9 +198,51 @@ while current_iteration<iterations :
     #sort fitness of seahorses form best to worst in array
     seahorses_copy=seahorses.copy()
     seahorses_ranked=rank_sphere_optimization(seahorses_copy)
+    
+    print("Los caballos rankeados------------------")
+    seahorses_temp=seahorses.copy()
+    print(seahorses_ranked)
+    for row in range (0,num_rows):
+       seahorses[row,:]=seahorses_temp[round(seahorses_ranked[row,0]),:].copy()
 
+    
+    print("------Arrego Ordenado por fitnes-.-----------------")
+    print(seahorses)
+    print("-------------------------------------------")
+
+    #make new array and breed seahorses
+    children_pop=round(Pop/2)
+    seahorses_children=np.zeros((children_pop,Dim))
+    
+
+    #fill children array
+    for row in range (0,children_pop):
+        r3=random.uniform(0,1)
+        for column in range (0,Dim):
+            #print("traveling r3= ",r3)
+            seahorses_children[row,column]=(r3*seahorses[row,column])+((1-r3)*seahorses[children_pop+row,column])
+    print("hijos")
+    print(seahorses_children)
+    #concatenate the children array
+    expanded_seahorses=np.concatenate((seahorses,seahorses_children),axis=0)
+    print("conectados------")
+    print(expanded_seahorses)
+    
+    #order them by fitness
+    expanded_copy=expanded_seahorses.copy()
+    expanded_seahorses_ranked=rank_sphere_optimization(expanded_copy)
+    print("------Arrego Ordenado por fitnes con hijos-.-----------------")
+    print(expanded_seahorses_ranked)
+    print("-------------------------------------------")
 
     current_iteration+=1
+
+    
+
+    
+
+
+
 
 
 
